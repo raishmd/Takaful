@@ -214,6 +214,9 @@
         "geospatial_coord": "الموقع الجغرافي",
         "smtp_config": "إعدادات البريد (SMTP)",
         "security_config": "إعدادات الأمان",
-        "integrations_config": "إعدادات الربط"
+        "integrations_config": "إعدادات الربط",
+        "all": "الكل",
+        "publishNow": "نشر الآن",
+        "saveChanges": "حفظ التغييرات"
     }
 }
