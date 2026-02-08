@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Admin User Model
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  announcements Announcement[]
+  news          News[]
+}
+
+// News Model
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @db.Text
+  image       String?
+  isActive    Boolean  @default(true)
+  isUrgent    Boolean  @default(false)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([isActive, publishedAt])
+  @@index([isUrgent])
+}
+
+// Announcement Categories
+enum AnnouncementCategory {
+  FOOD
+  MEDICINE
+  CLOTHING
+  FUNERAL
+}
+
+// Announcement Model
+model Announcement {
+  id          String               @id @default(cuid())
+  title       String
+  description String               @db.Text
+  category    AnnouncementCategory
+  image       String?
+  isActive    Boolean              @default(true)
+  isUrgent    Boolean              @default(false)
+  location    String?
+  contactInfo String?
+  publishedAt DateTime             @default(now())
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([category, isActive, publishedAt])
+  @@index([isUrgent])
+}
+
+// Contact Form Submissions
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([isRead, createdAt])
+}
+
+// Settings Model
+model Settings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
